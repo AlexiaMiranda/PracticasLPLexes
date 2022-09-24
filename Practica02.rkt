@@ -13,8 +13,10 @@
   [elipse (a number?) (b number?)]
   )
 
+;definición de pi
 (define pi 3.1415926535)
 
+;Función perimetro
 (define (perimetro f)
   (match f
     [(triangulo a b c) (+ a b c)]
@@ -25,9 +27,11 @@
     [else "No es una figura definida"]
    ))
 
+;Función area
 (define (area f)
   (match f
-    [(triangulo a b c) "No se puede calcular sin la altura"]
+    ;por formula de Heron
+    [(triangulo a b c) (sqrt(* (/ (+ a b c) 2) (- (/ (+ a b c) 2) a) (- (/ (+ a b c) 2) b) (- (/ (+ a b c) 2) c)))]
     [(rectangulo a b) (* a b)]
     [(rombo l D d) (/ (* D d) 2)]
     [(paralelogramo a b h) (* b h)]
@@ -43,6 +47,17 @@
   [vagon-restaurante (mesas number?) (personal number?)]
   [vagon-dormitorio  (camas number?)]
   )|#
+
+(define-type Tren
+  [tren-v (vagon Vagon?)]
+  [tren (loci locomotora?)
+          (resto Tren?)
+          (Locd locomotora?)]
+  [tren-t (vagon Vagon?)
+          (resto Tren?)]
+  [tren-1 (resto Tren?)
+          (vagon Vagon?)]
+)
 
 
 
