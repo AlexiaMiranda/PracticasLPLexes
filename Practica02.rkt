@@ -1,4 +1,6 @@
 #lang plai
+;Gomez Elizalde Alexys 316086189
+;Rodríguez Miranda Alexia 316293611
 
 ;;Ejercicio 1: Constructor de tipos Figura.
 ;; Precondiciones: numeros, dependiendo del tipo que se quiera.
@@ -49,28 +51,24 @@
   )
 
 (define-type Tren
-  ;;tren que solo esta conformado por un vagon, este no debería de darse, pero lo ponemos por practicidad.
-  [tren-v (vagon Vagon?)]
+  ;;tren que solo esta conformado por un vagon, este no debería de darse, pero lo ponemos por practicidad, excluyendo las locomotoras.
+  [tren-pasajeros (vagon vagon-pasajeros?)]
+  [tren-restaurante (vagon vagon-restaurante?)]
+  [tren-dormitorio (vagon vagon-dormitorio?)]
   ;; tren que tiene una locomotora al inicio del tren, otra al final, y en el medio otro tren
-  [tren (trenaux Tren-aux?)]
+  [tren-ft (loci locomotora?)
+        (resto Tren?)
+        (locd locomotora?)]
   ;; tren que tiene una locomotora al final
-  [tren-t (treni Tren?)
+  [tren-t (treni Tren?)  
           (locd locomotora?)]
   ;;tren que tiene una locomotora al inicio
   [tren-f (loci locomotora?)
           (trenf Tren?)]
 )
 
-(define-type Tren-aux
-  [tren-vag (vagon Vagon?)] ;;caso base, no usar
-  
-  [tren-aux (loci locomotora?)
-        (resto Tren-aux?)
-        (locd locomotora?)]
-  )
-
-
-
+#| Calcula el número de pasajeros máximo que pueden abordar
+el tren.
 (define (num-pasajeros tren)
   (cond
     [(tren-v? tren)
@@ -88,3 +86,58 @@
        ]
       
     ))
+|#
+
+;Calcula el porcentaje de la potencia de arrastre utilizada del tren.
+(define (arraste-usado tren)
+  (/(* (ac-potloc tren) 100) (cuenta-vags-noloc tren))
+  )
+
+(define (ac-potloc tren)
+            (cond
+              [(tren-v? tren)
+               (let ([vagon (tren-v-vagon tren)])
+                  (if (locomotora? vagon)
+                      (locomotora-p vagon)
+                      0))]
+                  )
+              [(tren? tren)
+               (let (
+                    [loci (tren-loci tren)]
+                    [locd (tren-locd tren)]
+                    [restot (tren-resto)])
+                     (+ (locomotora-p loci)
+                        (locomotora-p locd)
+                        (ac-potloc restot))
+                 )]
+              [(tren-i? tren)]
+              [(tren-t? tren)])
+             
+
+(define (cuenta-vags-noloc tren)
+  (cond
+    [(tren-v? tren) (let (
+      [vagon (tren-v-vagon tren)])
+      (if (locomotora? vagon)
+          0
+          1))]
+    [(tren? tren) (let (
+          [loci (tren-loci tren)]
+          [locd (tren-locd tren)]
+          [restot (tren-resto)]
+          ))]
+    [(tren-t? tren) (let (
+      [vagon (tren-t-vagon tren)]
+      [resto (trent-t-resto tren)])
+      (+ (cuenta-vags-noloc restot)
+         (if (locomotora? vagon)
+             0
+             1)))]
+    [(tren-f? tren) (let (
+        [vagon (tren-f-vagon tren)]
+        [restot (tren-f-resto tren)])
+        (+(cuenta-vags-noloc restot)
+          (if (locomotora? vagon)
+              0
+              1)))]))
+  
