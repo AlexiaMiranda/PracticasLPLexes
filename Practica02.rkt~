@@ -40,51 +40,24 @@
    ))
 
 
-
-(define-type Vagon
-  [locomotora (p positive-integer?)]
-  [vagon-pasajeros  (cap positive-integer?)]
-  [vagon-restaurante (mesas positive-integer?) (personal positive-integer?)]
-  [vagon-dormitorio  (camas positive-integer?)]
-  )
+#|
+(define-type Tren
+  [locomotora (p number?)]
+  [vagon-pasajeros  (cap number?)]
+  [vagon-restaurante (mesas number?) (personal number?)]
+  [vagon-dormitorio  (camas number?)]
+  )|#
 
 (define-type Tren
-  ;;tren que solo esta conformado por un vagon, este no debería de darse, pero lo ponemos por practicidad.
   [tren-v (vagon Vagon?)]
-  ;; tren que tiene una locomotora al inicio del tren, otra al final, y en el medio otro tren
-  [tren (trenaux Tren-aux?)]
-  ;; tren que tiene una locomotora al final
-  [tren-t (treni Tren?)
-          (locd locomotora?)]
-  ;;tren que tiene una locomotora al inicio
-  [tren-f (loci locomotora?)
-          (trenf Tren?)]
+  [tren (loci locomotora?)
+          (resto Tren?)
+          (Locd locomotora?)]
+  [tren-t (vagon Vagon?)
+          (resto Tren?)]
+  [tren-1 (resto Tren?)
+          (vagon Vagon?)]
 )
 
-(define-type Tren-aux
-  [tren-vag (vagon Vagon?)] ;;caso base, no usar
-  
-  [tren-aux (loci locomotora?)
-        (resto Tren-aux?)
-        (locd locomotora?)]
-  )
 
 
-
-(define (num-pasajeros tren)
-  (cond
-    [(tren-v? tren)
-     (let( [vagon (tren-v-vagon tren)] )
-       (if (vagon-pasajeros? vagon)
-           (vagon-pasajeros-cap vagon)
-           0)
-     )]
-    
-    [(tren? tren)
-     (let ( [trenau (tren-trenaux tren)] )
-       ()
-           )
-       
-       ]
-      
-    ))
